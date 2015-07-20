@@ -76,7 +76,7 @@ define(['jquery', 'backbone', 'myModel', 'io', 'forceView', 'colorpicker'], func
       });
 
       AppbaseChannel.on('add-node', function(node, callback) {
-        socket.emit( 'add-node', node, callback );
+        socket.emit( 'add-node', node || {}, callback );
       } );
 
       AppbaseChannel.on('edit-node', function() {
@@ -85,10 +85,6 @@ define(['jquery', 'backbone', 'myModel', 'io', 'forceView', 'colorpicker'], func
           color: model.get('color'),
           label: model.get('label')
         } );
-      });
-
-      AppbaseChannel.on('add-node', function() {
-        socket.emit( 'add-node', {} );
       });
 
       AppbaseChannel.on('remove-all-nodes', function() {
