@@ -33,16 +33,12 @@ define(['jquery', 'backbone', 'myModel', 'io', 'forceView', 'colorpicker'], func
     },
 
     editNode: function() {
-      this.model.set( {
-        label: this.$el.find('#textNode').val(),
-        color: this.$el.find('#textColorNode').val()
+      this.AppbaseSyncChannel.trigger('edit-node', {
+        id: this.model.get('id'),
+        color: this.$el.find('#textColorNode').val(),
+        label: this.$el.find('#textNode').val()
       } );
       this.hideModal();
-      this.AppbaseSyncChannel.trigger('edit-node', {
-        id: model.get('id'),
-        color: model.get('color'),
-        label: model.get('label')
-      } );
     },
 
     addNode: function() {
