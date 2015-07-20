@@ -38,7 +38,11 @@ define(['jquery', 'backbone', 'myModel', 'io', 'forceView', 'colorpicker'], func
         color: this.$el.find('#textColorNode').val()
       } );
       this.hideModal();
-      this.AppbaseSyncChannel.trigger('edit-node');
+      this.AppbaseSyncChannel.trigger('edit-node', {
+        id: model.get('id'),
+        color: model.get('color'),
+        label: model.get('label')
+      } );
     },
 
     addNode: function() {
@@ -56,8 +60,7 @@ define(['jquery', 'backbone', 'myModel', 'io', 'forceView', 'colorpicker'], func
     },
 
     syncWithAppBase: function() {
-      var socket, AppbaseChannel, model;
-      model = this.model;
+      var socket, AppbaseChannel;
       socket = io('https://dbas-with-socket-io.herokuapp.com/');
       AppbaseChannel = this.AppbaseSyncChannel;
 
@@ -79,12 +82,8 @@ define(['jquery', 'backbone', 'myModel', 'io', 'forceView', 'colorpicker'], func
         socket.emit( 'add-node', node || {}, callback );
       } );
 
-      AppbaseChannel.on('edit-node', function() {
-        socket.emit( 'edit-node', {
-          id: model.get('id'),
-          color: model.get('color'),
-          label: model.get('label')
-        } );
+      AppbaseChannel.on('edit-node', function(node) {
+        socket.emit( 'edit-node', node );
       });
 
       AppbaseChannel.on('remove-all-nodes', function() {
