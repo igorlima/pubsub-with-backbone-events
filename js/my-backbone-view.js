@@ -5,7 +5,6 @@ define(['jquery', 'backbone', 'myModel', 'io', 'forceView', 'colorpicker'], func
     el: 'body',
     events: {
       'click button.add-node': 'addNode',
-      'click button.remove-all-node': 'removeAllNode',
       'click #editNodeModal button.btn.btn-primary': 'editNode'
     },
 
@@ -45,10 +44,6 @@ define(['jquery', 'backbone', 'myModel', 'io', 'forceView', 'colorpicker'], func
       this.AppbaseSyncChannel.trigger('add-node');
     },
 
-    removeAllNode: function() {
-      this.AppbaseSyncChannel.trigger('remove-all-nodes');
-    },
-
     sync: function() {
       this.syncWithForceView();
       this.syncWithAppBase();
@@ -80,10 +75,6 @@ define(['jquery', 'backbone', 'myModel', 'io', 'forceView', 'colorpicker'], func
 
       AppbaseChannel.on('edit-node', function(node) {
         socket.emit( 'edit-node', node );
-      });
-
-      AppbaseChannel.on('remove-all-nodes', function() {
-        socket.emit( 'remove-all-nodes' );
       });
 
       socket.on( 'node-added', function(node) {
