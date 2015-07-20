@@ -1,23 +1,21 @@
 require.config({
   baseUrl: 'js',
   paths: {
-    jquery: 'lib/jquery.v1.11.2.min',
+    backbone: 'lib/backbone.v1.2.0.min',
     bootstrap: 'lib/bootstrap.min',
-    d3: 'lib/d3.v2.min',
     colorpicker: 'lib/bootstrap-colorpicker.min',
-    pubsub: 'lib/PubSubJS',
+    d3: 'lib/d3.v2.min',
+    jquery: 'lib/jquery.v1.11.2.min',
+    underscore: 'lib/underscore.v1.8.3.min',
 
     forceView: 'force-view',
-    enter: 'enter',
-    appbaseSync: 'appbase-sync',
+    myView: 'my-backbone-view',
+    myModel: 'my-backbone-model',
     io: 'https://dbas-with-socket-io.herokuapp.com/socket.io/socket.io'
   },
   shim: {
     bootstrap: {
       deps: ['jquery']
-    },
-    login: {
-      //deps: ['appbase']
     },
     d3: {
       exports: 'd3'
@@ -26,7 +24,6 @@ require.config({
   }
 });
 
-require( [ 'bootstrap', 'forceView' ], function( bootstrap, forceView ) {
-  forceView.init();
-  console.log( 'loaded' );
+require( [ 'bootstrap', 'myView' ], function( bootstrap, MyView ) {
+  new MyView();
 } );
