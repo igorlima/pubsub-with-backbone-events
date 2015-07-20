@@ -1,12 +1,12 @@
 require.config({
-  baseUrl: 'js',
+  baseUrl: '/',
   paths: {
-    backbone: 'lib/backbone.v1.2.0.min',
-    bootstrap: 'lib/bootstrap.min',
-    colorpicker: 'lib/bootstrap-colorpicker.min',
-    d3: 'lib/d3.v2.min',
-    jquery: 'lib/jquery.v1.11.2.min',
-    underscore: 'lib/underscore.v1.8.3.min',
+    backbone: 'bower_components/backbone/backbone-min',
+    bootstrap: 'bower_components/bootstrap/dist/js/bootstrap.min',
+    colorpicker: 'bower_components/xaguilars-bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min',
+    d3: 'bower_components/d3/d3.v2.min',
+    jquery: 'bower_components/jquery/dist/jquery.min',
+    underscore: 'bower_components/underscore/underscore-min',
 
     forceView: 'force-view',
     myView: 'my-backbone-view',
