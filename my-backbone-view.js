@@ -1,5 +1,5 @@
 
-define(['jquery', 'backbone', 'myModel', 'io', 'forceView', 'colorpicker'], function($, Backbone, MyModel, io, ForceView) {
+define(['jquery', 'backbone', 'myModel', 'dbaas', 'forceView', 'colorpicker'], function($, Backbone, MyModel, db, ForceView) {
 
   return Backbone.View.extend({
     el: 'body',
@@ -51,54 +51,52 @@ define(['jquery', 'backbone', 'myModel', 'io', 'forceView', 'colorpicker'], func
     },
 
     syncWithDBaaS: function() {
-      var socket, dbChannel;
-      socket = io('https://dbas-with-socket-io.herokuapp.com/');
-      dbChannel = this.dbChannel;
+      var dbChannel = this.dbChannel;
 
       dbChannel.on('remove-node', function(node) {
-        socket.emit('remove-node', node);
+        db.trigger('remove-node', node);
       });
 
       dbChannel.on('add-link', function(link) {
         if (link.target.id) {
-          socket.emit( 'add-link', link );
+          db.trigger( 'add-link', link );
         }
       });
 
       dbChannel.on('remove-link', function(link) {
-        socket.emit('remove-link', link);
+        db.trigger('remove-link', link);
       });
 
       dbChannel.on('add-node', function(node, callback) {
-        socket.emit( 'add-node', node || {}, callback );
+        db.trigger( 'add-node', node || {}, callback );
       } );
 
       dbChannel.on('edit-node', function(node) {
-        socket.emit( 'edit-node', node );
+        db.trigger( 'edit-node', node );
       });
 
-      socket.on( 'node-added', function(node) {
+      db.on( 'node-added', function(node) {
         ForceView.channel.trigger('add-node', node );
         ForceView.channel.trigger('remove-node', {});
       } );
 
-      socket.on('node-removed', function(node) {
+      db.on('node-removed', function(node) {
         ForceView.channel.trigger('remove-node', node);
       });
 
-      socket.on( 'node-edited', function(node) {
+      db.on( 'node-edited', function(node) {
         ForceView.channel.trigger('edit-node', node);
       } );
 
-      socket.on( 'link-added', function(link) {
+      db.on( 'link-added', function(link) {
         ForceView.channel.trigger('add-link', link);
       } );
 
-      socket.on( 'link-removed', function(link) {
+      db.on( 'link-removed', function(link) {
         ForceView.channel.trigger('remove-link', link);
       } );
 
-      socket.emit('retrieve-all-nodes');
+      db.trigger('retrieve-all-nodes');
 
     },
 

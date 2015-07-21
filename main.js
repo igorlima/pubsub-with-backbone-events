@@ -11,7 +11,7 @@ require.config({
     forceView: 'force-view',
     myView: 'my-backbone-view',
     myModel: 'my-backbone-model',
-    io: 'https://dbas-with-socket-io.herokuapp.com/socket.io/socket.io'
+    dbaas: 'dbaas'
   },
   shim: {
     bootstrap: {
