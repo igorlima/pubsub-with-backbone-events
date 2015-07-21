@@ -8,7 +8,7 @@ define(['jquery', 'backbone'], function($, Backbone) {
     After that, create your own application's name,
     then new learners can use my API calls left. Thanks.
   **/
-  Appbase.credentials("dbas_with_socket_io", "a7b27d02b9853ef334ee143ee338f7f0");
+  Appbase.credentials("pubsub_with_backbone_events", "fa97bda44848217908a1a2a3ccf7bf33");
   namespace = "my-first-namespace";
   nsref = Appbase.ns(namespace);
   /* END */
