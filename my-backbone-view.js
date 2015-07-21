@@ -5,14 +5,16 @@ define(['jquery', 'backbone', 'myModel', 'dbaas', 'forceView', 'colorpicker'], f
     el: 'body',
     events: {
       'click button.add-node': 'addNode',
-      'click #editNodeModal button.btn.btn-primary': 'editNode'
+      'click #editNodeModal button.btn.btn-primary': 'editNode',
+      'change #textNode': 'textChanged',
+      'changeColor #textColorNode': 'colorChanged'
     },
 
     initialize: function( options ) {
       var view = this;
       view.dbChannel = $.extend( {}, Backbone.Events );
       view.model = new MyModel();
-      view.$el.find('#editNodeModal #textColorNode').colorpicker();
+      view.$el.find('#textColorNode').colorpicker();
 
       ForceView.init( function() {
         ForceView.channel.trigger('clear', function() {
@@ -21,9 +23,15 @@ define(['jquery', 'backbone', 'myModel', 'dbaas', 'forceView', 'colorpicker'], f
       });
     },
 
+    textChanged: function() {
+      this.model.set( 'label', this.$el.find('#textNode').val(), { silent: true } );
+    },
+
+    colorChanged: function() {
+      this.model.set( 'color', this.$el.find('#textColorNode').val(), { silent: true } );
+    },
+
     openModal: function() {
-      this.$el.find('#textColorNode').val( this.model.get('color') );
-      this.$el.find('#textNode').val( this.model.get('label') );
       this.$el.find('#editNodeModal').modal('show');
     },
 
@@ -34,8 +42,8 @@ define(['jquery', 'backbone', 'myModel', 'dbaas', 'forceView', 'colorpicker'], f
     editNode: function() {
       this.dbChannel.trigger('edit-node', {
         id: this.model.get('id'),
-        color: this.$el.find('#textColorNode').val(),
-        label: this.$el.find('#textNode').val()
+        color: this.model.get('color'),
+        label: this.model.get('label')
       } );
       this.hideModal();
     },
@@ -45,8 +53,17 @@ define(['jquery', 'backbone', 'myModel', 'dbaas', 'forceView', 'colorpicker'], f
     },
 
     sync: function() {
-      this.syncWithForceView();
-      this.syncWithDBaaS();
+      var view = this;
+
+      view.model.on('change:color', function(model, color) {
+        view.$el.find('#textColorNode').val( color );
+      });
+      view.model.on('change:label', function(model, label) {
+        view.$el.find('#textNode').val( label );
+      });
+
+      view.syncWithForceView();
+      view.syncWithDBaaS();
       console.log('ready!! backbone view loaded and sync');
     },
 
