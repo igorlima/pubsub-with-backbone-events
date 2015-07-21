@@ -1,5 +1,5 @@
 
-define(['jquery', 'backbone', 'myModel', 'forceView', 'colorpicker'], function($, Backbone, MyModel, ForceView) {
+define(['jquery', 'backbone', 'myModel', 'forceView'], function($, Backbone, MyModel, ForceView) {
 
   return Backbone.View.extend({
     el: 'body',

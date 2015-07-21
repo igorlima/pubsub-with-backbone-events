@@ -24,6 +24,6 @@ require.config({
   }
 });
 
-require( [ 'bootstrap', 'myView' ], function( bootstrap, MyView ) {
+require( [ 'myView', 'bootstrap', 'colorpicker' ], function( MyView ) {
   new MyView();
 } );
