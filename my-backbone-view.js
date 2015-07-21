@@ -1,5 +1,5 @@
 
-define(['jquery', 'backbone', 'myModel', 'dbaas', 'forceView', 'colorpicker'], function($, Backbone, MyModel, db, ForceView) {
+define(['jquery', 'backbone', 'myModel', 'forceView', 'colorpicker'], function($, Backbone, MyModel, ForceView) {
 
   return Backbone.View.extend({
     el: 'body',
@@ -69,52 +69,54 @@ define(['jquery', 'backbone', 'myModel', 'dbaas', 'forceView', 'colorpicker'], f
 
     syncWithDBaaS: function() {
       var dbChannel = this.dbChannel;
+      require(['dbaas'], function(db) {
 
-      dbChannel.on('remove-node', function(node) {
-        db.trigger('remove-node', node);
+        dbChannel.on('remove-node', function(node) {
+          db.trigger('remove-node', node);
+        });
+
+        dbChannel.on('add-link', function(link) {
+          if (link.target.id) {
+            db.trigger( 'add-link', link );
+          }
+        });
+
+        dbChannel.on('remove-link', function(link) {
+          db.trigger('remove-link', link);
+        });
+
+        dbChannel.on('add-node', function(node, callback) {
+          db.trigger( 'add-node', node || {}, callback );
+        } );
+
+        dbChannel.on('edit-node', function(node) {
+          db.trigger( 'edit-node', node );
+        });
+
+        db.on( 'node-added', function(node) {
+          ForceView.channel.trigger('add-node', node );
+          ForceView.channel.trigger('remove-node', {});
+        } );
+
+        db.on('node-removed', function(node) {
+          ForceView.channel.trigger('remove-node', node);
+        });
+
+        db.on( 'node-edited', function(node) {
+          ForceView.channel.trigger('edit-node', node);
+        } );
+
+        db.on( 'link-added', function(link) {
+          ForceView.channel.trigger('add-link', link);
+        } );
+
+        db.on( 'link-removed', function(link) {
+          ForceView.channel.trigger('remove-link', link);
+        } );
+
+        db.trigger('retrieve-all-nodes');
+
       });
-
-      dbChannel.on('add-link', function(link) {
-        if (link.target.id) {
-          db.trigger( 'add-link', link );
-        }
-      });
-
-      dbChannel.on('remove-link', function(link) {
-        db.trigger('remove-link', link);
-      });
-
-      dbChannel.on('add-node', function(node, callback) {
-        db.trigger( 'add-node', node || {}, callback );
-      } );
-
-      dbChannel.on('edit-node', function(node) {
-        db.trigger( 'edit-node', node );
-      });
-
-      db.on( 'node-added', function(node) {
-        ForceView.channel.trigger('add-node', node );
-        ForceView.channel.trigger('remove-node', {});
-      } );
-
-      db.on('node-removed', function(node) {
-        ForceView.channel.trigger('remove-node', node);
-      });
-
-      db.on( 'node-edited', function(node) {
-        ForceView.channel.trigger('edit-node', node);
-      } );
-
-      db.on( 'link-added', function(link) {
-        ForceView.channel.trigger('add-link', link);
-      } );
-
-      db.on( 'link-removed', function(link) {
-        ForceView.channel.trigger('remove-link', link);
-      } );
-
-      db.trigger('retrieve-all-nodes');
-
     },
 
     syncWithForceView: function() {
