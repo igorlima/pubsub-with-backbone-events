@@ -12,7 +12,7 @@ define(['jquery', 'backbone', 'myModel', 'forceView'], function($, Backbone, MyM
 
     initialize: function( options ) {
       var view = this;
-      view.dbChannel = $.extend( {}, Backbone.Events );
+      view.mediatorChannel = $.extend( {}, Backbone.Events );
       view.model = new MyModel();
       view.$el.find('#textColorNode').colorpicker();
 
@@ -40,7 +40,7 @@ define(['jquery', 'backbone', 'myModel', 'forceView'], function($, Backbone, MyM
     },
 
     editNode: function() {
-      this.dbChannel.trigger('edit-node', {
+      this.mediatorChannel.trigger('edit-node', {
         id: this.model.get('id'),
         color: this.model.get('color'),
         label: this.model.get('label')
@@ -49,7 +49,7 @@ define(['jquery', 'backbone', 'myModel', 'forceView'], function($, Backbone, MyM
     },
 
     addNode: function() {
-      this.dbChannel.trigger('add-node');
+      this.mediatorChannel.trigger('add-node');
     },
 
     sync: function() {
@@ -68,53 +68,53 @@ define(['jquery', 'backbone', 'myModel', 'forceView'], function($, Backbone, MyM
     },
 
     syncWithDBaaS: function() {
-      var dbChannel = this.dbChannel;
-      require(['dbaas'], function(db) {
+      var mediatorChannel = this.mediatorChannel;
+      require(['dbaas'], function(dbaas) {
 
-        dbChannel.on('remove-node', function(node) {
-          db.trigger('remove-node', node);
+        mediatorChannel.on('remove-node', function(node) {
+          dbaas.trigger('remove-node', node);
         });
 
-        dbChannel.on('add-link', function(link) {
+        mediatorChannel.on('add-link', function(link) {
           if (link.target.id) {
-            db.trigger( 'add-link', link );
+            dbaas.trigger( 'add-link', link );
           }
         });
 
-        dbChannel.on('remove-link', function(link) {
-          db.trigger('remove-link', link);
+        mediatorChannel.on('remove-link', function(link) {
+          dbaas.trigger('remove-link', link);
         });
 
-        dbChannel.on('add-node', function(node, callback) {
-          db.trigger( 'add-node', node || {}, callback );
+        mediatorChannel.on('add-node', function(node, callback) {
+          dbaas.trigger( 'add-node', node || {}, callback );
         } );
 
-        dbChannel.on('edit-node', function(node) {
-          db.trigger( 'edit-node', node );
+        mediatorChannel.on('edit-node', function(node) {
+          dbaas.trigger( 'edit-node', node );
         });
 
-        db.on( 'node-added', function(node) {
+        dbaas.on( 'node-added', function(node) {
           ForceView.channel.trigger('add-node', node );
           ForceView.channel.trigger('remove-node', {});
         } );
 
-        db.on('node-removed', function(node) {
+        dbaas.on('node-removed', function(node) {
           ForceView.channel.trigger('remove-node', node);
         });
 
-        db.on( 'node-edited', function(node) {
+        dbaas.on( 'node-edited', function(node) {
           ForceView.channel.trigger('edit-node', node);
         } );
 
-        db.on( 'link-added', function(link) {
+        dbaas.on( 'link-added', function(link) {
           ForceView.channel.trigger('add-link', link);
         } );
 
-        db.on( 'link-removed', function(link) {
+        dbaas.on( 'link-removed', function(link) {
           ForceView.channel.trigger('remove-link', link);
         } );
 
-        db.trigger('retrieve-all-nodes');
+        dbaas.trigger('retrieve-all-nodes');
 
       });
     },
@@ -123,7 +123,7 @@ define(['jquery', 'backbone', 'myModel', 'forceView'], function($, Backbone, MyM
       var view = this;
 
       ForceView.channel.on('node-removed', function(node) {
-        view.dbChannel.trigger( 'remove-node', node );
+        view.mediatorChannel.trigger( 'remove-node', node );
       });
 
       ForceView.channel.on('node-edited', function(node) {
@@ -136,15 +136,15 @@ define(['jquery', 'backbone', 'myModel', 'forceView'], function($, Backbone, MyM
       });
 
       ForceView.channel.on('link-added', function(link) {
-        view.dbChannel.trigger( 'add-link', link );
+        view.mediatorChannel.trigger( 'add-link', link );
       });
 
       ForceView.channel.on('link-removed', function(link) {
-        view.dbChannel.trigger('remove-link', link);
+        view.mediatorChannel.trigger('remove-link', link);
       });
 
       ForceView.channel.on('node-and-link-added', function(data) {
-        view.dbChannel.trigger( 'add-node', data.node, function( node ) {
+        view.mediatorChannel.trigger( 'add-node', data.node, function( node ) {
           data.node.id = node.id;
           ForceView.channel.trigger('link-added', data.link);
         } );
