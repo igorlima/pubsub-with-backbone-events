@@ -16,10 +16,8 @@ define(['jquery', 'backbone', 'myModel', 'forceView'], function($, Backbone, MyM
       view.model = new MyModel();
       view.$el.find('#textColorNode').colorpicker();
 
-      ForceView.init( function() {
-        ForceView.channel.trigger('clear', function() {
-          view.sync();
-        });
+      ForceView.trigger('init', function() {
+        view.sync();
       });
     },
 
@@ -94,24 +92,24 @@ define(['jquery', 'backbone', 'myModel', 'forceView'], function($, Backbone, MyM
         });
 
         dbaas.on( 'node-added', function(node) {
-          ForceView.channel.trigger('add-node', node );
-          ForceView.channel.trigger('remove-node', {});
+          ForceView.trigger('add-node', node );
+          ForceView.trigger('remove-node', {});
         } );
 
         dbaas.on('node-removed', function(node) {
-          ForceView.channel.trigger('remove-node', node);
+          ForceView.trigger('remove-node', node);
         });
 
         dbaas.on( 'node-edited', function(node) {
-          ForceView.channel.trigger('edit-node', node);
+          ForceView.trigger('edit-node', node);
         } );
 
         dbaas.on( 'link-added', function(link) {
-          ForceView.channel.trigger('add-link', link);
+          ForceView.trigger('add-link', link);
         } );
 
         dbaas.on( 'link-removed', function(link) {
-          ForceView.channel.trigger('remove-link', link);
+          ForceView.trigger('remove-link', link);
         } );
 
         dbaas.trigger('retrieve-all-nodes');
@@ -122,11 +120,11 @@ define(['jquery', 'backbone', 'myModel', 'forceView'], function($, Backbone, MyM
     syncWithForceView: function() {
       var view = this;
 
-      ForceView.channel.on('node-removed', function(node) {
+      ForceView.on('node-removed', function(node) {
         view.mediatorChannel.trigger( 'remove-node', node );
       });
 
-      ForceView.channel.on('node-edited', function(node) {
+      ForceView.on('node-edited', function(node) {
         view.model.set({
           id: node.id,
           color: node.color,
@@ -135,22 +133,22 @@ define(['jquery', 'backbone', 'myModel', 'forceView'], function($, Backbone, MyM
         view.openModal();
       });
 
-      ForceView.channel.on('link-added', function(link) {
+      ForceView.on('link-added', function(link) {
         view.mediatorChannel.trigger( 'add-link', link );
       });
 
-      ForceView.channel.on('link-removed', function(link) {
+      ForceView.on('link-removed', function(link) {
         view.mediatorChannel.trigger('remove-link', link);
       });
 
-      ForceView.channel.on('node-and-link-added', function(data) {
+      ForceView.on('node-and-link-added', function(data) {
         view.mediatorChannel.trigger( 'add-node', data.node, function( node ) {
           data.node.id = node.id;
-          ForceView.channel.trigger('link-added', data.link);
+          ForceView.trigger('link-added', data.link);
         } );
       });
 
-      ForceView.channel.trigger('remove-node', {});
+      ForceView.trigger('remove-node', {});
     }
 
   });

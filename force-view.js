@@ -356,10 +356,12 @@ define(['d3', 'jquery', 'backbone'], function(d3, $, Backbone) {
       redraw();
     }
   });
+  ForceViewEventChannel.on('init', function(cb) {
+    init(cb);
+  });
+  ForceViewEventChannel.on('redraw', function() {
+    redraw();
+  });
 
-  return {
-    init: init,
-    redraw: redraw,
-    channel: ForceViewEventChannel
-  };
+  return ForceViewEventChannel;
 });
