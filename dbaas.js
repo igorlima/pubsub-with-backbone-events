@@ -12,8 +12,8 @@ define(['jquery', 'underscore', 'backbone', 'elasticsearch'], function($, _, Bac
     appname: 'pubsub_with_backbone_events',
     url: 'https://P1y6pnqz0:e45be770-94fa-4658-8ae5-d15cae96c936@scalr.api.appbase.io',
     type: {
-      vertex: 'vertex-node',
-      edge: 'edge-link'
+      vertex: 'vertex',
+      edge: 'edge'
     },
     client: null,
     streamingClient: null
@@ -81,10 +81,12 @@ define(['jquery', 'underscore', 'backbone', 'elasticsearch'], function($, _, Bac
         callback && callback();
       } else if (res._deleted) {
         Channel.trigger( 'node-removed', res._source );
-      } else {
+      } else if (res._source && res._source.id) {
         Channel.trigger( 'node-edited', $.extend( res._source || {}, {
           id: res._id
         } ) );
+      } else {
+        Channel.trigger( 'node-added', {id: res._id} );
       }
 
     }).on('error', function(err) {
