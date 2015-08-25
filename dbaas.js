@@ -56,7 +56,7 @@ define(['jquery', 'underscore', 'backbone', 'elasticsearch'], function($, _, Bac
       type: config.type.edge,
       body: {
         from: 0,
-        size: 300,
+        size: 1000,
         query: {
           match_all: {}
         }
@@ -90,7 +90,7 @@ define(['jquery', 'underscore', 'backbone', 'elasticsearch'], function($, _, Bac
       type: config.type.vertex,
       body: {
         from: 0,
-        size: 300,
+        size: 1000,
         query: {
           match_all: {}
         }
