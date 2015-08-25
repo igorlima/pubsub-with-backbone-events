@@ -1,5 +1,5 @@
 define(['jquery', 'underscore', 'backbone', 'elasticsearch'], function($, _, Backbone) {
-  var Channel, config, retrieveEdges, retrieveVertex, removeEdgeIfNeeded, checkIfVertexExistAndRemoveEdgeIfNeeded;
+  var Channel, config, retrieveEdges, retrieveVertex;
 
   /**
     NOTE: Remeber you are using my application pubsub_with_backbone_events.
@@ -31,26 +31,6 @@ define(['jquery', 'underscore', 'backbone', 'elasticsearch'], function($, _, Bac
   window.configDBaaS = config; //exporting config var for easy debugging
   /* END */
 
-  checkIfVertexExistAndRemoveEdgeIfNeeded = function(edge, vertex) {
-    config.streamingClient.streamDocument({
-      type: config.type.vertex,
-      id: vertex.id
-    }).once('data', function(res) {
-      !res.found && config.client.delete({
-        index: config.appname,
-        type: config.type.edge,
-        id: edge._id
-      }).then(function(response){
-        console.warn( 'edge was removed because it was needed: ' + edge._id );
-      });
-    });
-  };
-
-  removeEdgeIfNeeded = function(edge) {
-    checkIfVertexExistAndRemoveEdgeIfNeeded(edge, edge._source.source);
-    checkIfVertexExistAndRemoveEdgeIfNeeded(edge, edge._source.target);
-  };
-
   retrieveEdges = function() {
     config.streamingClient.streamSearch({
       type: config.type.edge,
@@ -69,7 +49,6 @@ define(['jquery', 'underscore', 'backbone', 'elasticsearch'], function($, _, Bac
             target: link._source.target,
             id: link._id
           });
-          removeEdgeIfNeeded(link);
         });
       } else if (res._deleted) {
         Channel.trigger( 'link-removed' , {id: res._id});
