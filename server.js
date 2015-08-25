@@ -2,8 +2,7 @@
 var express       = require('express'),
     appbase       = require("appbase-js"),
     elasticsearch = require('elasticsearch'),
-    CronJob       = require('cron').CronJob,
-    _             = require('underscore');
+    CronJob       = require('cron').CronJob;
  
 var app = express()
   .use(express.static(__dirname + '/'))
@@ -64,9 +63,9 @@ function removeEdgesIfNeeded() {
       }
     }
   }).once('data', function(res, err) {
-    _.each(res.hits && res.hits.hits, function(edge) {
+    res && res.hits && res.hits.hits.forEach( function(edge) {
       removeEdgeIfNeeded(edge);
-    });
+    } );
   });
 };
 
@@ -93,7 +92,7 @@ new CronJob('00 59 * * * *', function() {
         }
       }
     }).once('data', function(res, err) {
-      _.each(res.hits && res.hits.hits, function(vertex) {
+      res && res.hits && res.hits.hits.forEach( function(vertex) {
         config.client.delete({
           index: config.appname,
           type: config.type.vertex,
