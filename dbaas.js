@@ -80,7 +80,7 @@ define(['jquery', 'underscore', 'backbone', 'elasticsearch'], function($, _, Bac
         });
         callback && callback();
       } else if (res._deleted) {
-        Channel.trigger( 'node-removed', res._source );
+        Channel.trigger( 'node-removed', {id: res._id} );
       } else if (res._source && res._source.id) {
         Channel.trigger( 'node-edited', $.extend( res._source || {}, {
           id: res._id
