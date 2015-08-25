@@ -82,7 +82,7 @@ new CronJob('59 * * * * *', function() {
 );
 
 // Runs every HOUR to remove all nodes
-new CronJob('* 59 * * * *', function() {
+new CronJob('00 59 * * * *', function() {
     config.streamingClient.streamSearch({
       type: config.type.vertex,
       body: {
