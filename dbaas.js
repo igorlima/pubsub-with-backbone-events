@@ -35,6 +35,8 @@ define(['jquery', 'underscore', 'backbone', 'elasticsearch'], function($, _, Bac
     config.streamingClient.streamSearch({
       type: config.type.edge,
       body: {
+        from: 0,
+        size: 1000,
         query: {
           match_all: {}
         }
@@ -66,6 +68,8 @@ define(['jquery', 'underscore', 'backbone', 'elasticsearch'], function($, _, Bac
     config.streamingClient.streamSearch({
       type: config.type.vertex,
       body: {
+        from: 0,
+        size: 1000,
         query: {
           match_all: {}
         }
