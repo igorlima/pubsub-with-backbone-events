@@ -26,6 +26,6 @@ require.config({
   }
 });
 
-require( [ 'myView', 'bootstrap', 'colorpicker' ], function( MyView ) {
+require( [ 'myView', 'bootstrap', 'elasticsearch', 'colorpicker' ], function( MyView ) {
   new MyView();
 } );
